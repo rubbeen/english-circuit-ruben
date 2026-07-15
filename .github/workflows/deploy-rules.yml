@@ -20,5 +20,5 @@ jobs:
           test -n "$SERVICE_ACCOUNT"
           printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
-      - name: Deploy only reviewed rules and indexes
-        run: npx firebase deploy --only firestore:rules,firestore:indexes --project control-financiero-ruben
+      - name: Deploy only reviewed Firestore rules
+        run: npx firebase deploy --only firestore:rules --project control-financiero-ruben

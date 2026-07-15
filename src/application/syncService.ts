@@ -1,6 +1,6 @@
 import type { SyncStatus } from '../domain/models';
 import type { Repositories } from '../domain/repositories';
-import { pushEducationalOperation } from '../infrastructure/firebase/syncRemote';
+import { pullEducationalSnapshot, pushEducationalOperation } from '../infrastructure/firebase/syncRemote';
 
 export class SyncService {
   private running = false;
@@ -19,8 +19,33 @@ export class SyncService {
           onStatus?.('error'); return;
         }
       }
+      if (await this.repositories.syncQueue.count() > 0) { onStatus?.('pending'); return; }
+      await this.mergeRemote(uid);
       onStatus?.('synced');
-    } finally { this.running = false; }
+    } catch { onStatus?.('error'); }
+    finally { this.running = false; }
+  }
+
+  private async mergeRemote(uid: string) {
+    const snapshot = await pullEducationalSnapshot(uid);
+    if (snapshot.profile) await this.repositories.profile.save(snapshot.profile);
+    for (const value of snapshot.lessonProgress) {
+      const local = await this.repositories.lessonProgress.get(value.id);
+      if (!local || value.updatedAt >= local.updatedAt) await this.repositories.lessonProgress.save(value);
+    }
+    for (const value of snapshot.reviewCards) {
+      const local = await this.repositories.reviews.get(value.id);
+      if (!local || value.updatedAt >= local.updatedAt) await this.repositories.reviews.save(value);
+    }
+    const localSessions = new Map((await this.repositories.sessions.list(Number.MAX_SAFE_INTEGER)).map((value) => [value.id, value]));
+    for (const value of snapshot.studySessions) {
+      const local = localSessions.get(value.id);
+      if (!local || value.updatedAt >= local.updatedAt) await this.repositories.sessions.save(value);
+    }
+    const localStatistics = new Map((await this.repositories.statistics.list()).map((value) => [value.id, value]));
+    for (const value of snapshot.statistics) {
+      const local = localStatistics.get(value.id);
+      if (!local || value.updatedAt >= local.updatedAt) await this.repositories.statistics.save(value);
+    }
   }
 }
-

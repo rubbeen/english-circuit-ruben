@@ -1,15 +1,15 @@
-import { access, readFile, readdir } from 'node:fs/promises';
-import path from 'node:path';
+import { access, readFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 
 const mode = process.argv[2]; const errors = [];
 const text = async (file) => { try { return await readFile(file, 'utf8'); } catch { return ''; } };
-const allFiles = async (root) => { const output=[]; for(const entry of await readdir(root,{withFileTypes:true})){if(['node_modules','.git','dist','android'].includes(entry.name))continue;const full=path.join(root,entry.name);if(entry.isDirectory())output.push(...await allFiles(full));else output.push(full);}return output; };
+const allFiles = async () => execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' }).split(/\r?\n/).filter(Boolean);
 const pkg = JSON.parse(await text('package.json')); const capacitor = await text('capacitor.config.ts'); const rc = await text('.firebaserc'); const firebase = await text('firebase.json');
 
 if (mode === 'project' || mode === 'release') {
   if (pkg.name !== 'english-circuit-ruben') errors.push('El repositorio activo no es English Circuit.');
   if (!capacitor.includes('com.ruben.englishcircuit') || capacitor.includes('com.ruben.controlfinanciero')) errors.push('Package ID Android incorrecto.');
-  const remote = (await import('node:child_process')).execFileSync('git',['remote','get-url','origin'],{encoding:'utf8'}).trim();
+  const remote = execFileSync('git',['remote','get-url','origin'],{encoding:'utf8'}).trim();
   if (!remote.includes('rubbeen/english-circuit-ruben')) errors.push('Remoto Git incorrecto.');
 }
 if (mode === 'firebase' || mode === 'release') {
@@ -19,9 +19,10 @@ if (mode === 'firebase' || mode === 'release') {
 if (mode === 'security' || mode === 'release') {
   const files = await allFiles('.');
   for (const file of files) {
-    if (file.endsWith(path.join('scripts','guards.mjs'))) continue;
+    const normalized = file.replaceAll('\\', '/');
+    if (normalized === 'scripts/guards.mjs') continue;
     if (/\.(png|jpg|ico|woff2|lock)$/.test(file)) continue; const source = await text(file);
-    if (file.includes(path.join('src','')) && /(?:collection|doc)\s*\([^\n]*(?:accounts|categories|movements|budgets)/i.test(source)) errors.push(`Consulta financiera detectada en ${file}.`);
+    if (normalized.startsWith('src/') && /(?:collection|doc)\s*\([^\n]*(?:accounts|categories|movements|budgets)/i.test(source)) errors.push(`Consulta financiera detectada en ${file}.`);
     if (/firebase deploy(?![^\n]*--only)/.test(source) && !file.endsWith('AGENTS.md') && !file.endsWith('DEPLOYMENT.md')) errors.push(`Despliegue Firebase sin --only en ${file}.`);
     if (/com\.ruben\.controlfinanciero/.test(source) && !['AGENTS.md','DECISIONS.md','DISCOVERY.md','SECURITY.md'].some((name)=>file.endsWith(name))) errors.push(`Package ID financiero detectado en ${file}.`);
     if (/orientation\s*=\s*["'](?:portrait|landscape)/i.test(source)) errors.push(`Orientación bloqueada en ${file}.`);
