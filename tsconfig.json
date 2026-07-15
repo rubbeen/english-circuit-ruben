@@ -17,6 +17,5 @@
     "jsx": "react-jsx",
     "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["src", "tests", "vite.config.ts", "capacitor.config.ts"]
+  "include": ["src", "tests", "vite.config.ts", "vitest.rules.config.ts", "capacitor.config.ts"]
 }
-
