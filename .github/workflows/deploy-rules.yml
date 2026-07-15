@@ -4,7 +4,7 @@ permissions: { contents: read }
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: english-circuit-rules-approval
+    environment: production
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,5 +21,4 @@ jobs:
           printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
       - name: Deploy only reviewed rules and indexes
-        run: npx firebase deploy --only firestore:rules,firestore:indexes,storage --project control-financiero-ruben
-
+        run: npx firebase deploy --only firestore:rules,firestore:indexes --project control-financiero-ruben

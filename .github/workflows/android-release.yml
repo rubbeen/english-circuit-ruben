@@ -5,7 +5,7 @@ permissions: { contents: write }
 jobs:
   release:
     runs-on: ubuntu-latest
-    environment: english-circuit-android-release
+    environment: production
     env:
       VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
       VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
@@ -19,7 +19,7 @@ jobs:
         with: { node-version: 24, cache: npm }
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21', cache: gradle }
-      - run: npm ci && npm run guard:security && npm run build && npx cap sync android
+      - run: npm ci && npm run guard:security && npm run guard:release && npm run build && npx cap sync android
       - name: Materialize signing files
         env:
           KEYSTORE: ${{ secrets.ENGLISH_ANDROID_KEYSTORE_BASE64 }}
@@ -30,10 +30,12 @@ jobs:
           test -n "$KEYSTORE" && test -n "$STORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD"
           printf '%s' "$KEYSTORE" | base64 --decode > android/release.jks
           printf 'storeFile=release.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > android/keystore.properties
-      - run: ./gradlew assembleRelease bundleRelease --no-daemon
+      - run: ./gradlew clean lint test assembleRelease bundleRelease --no-daemon
         working-directory: android
       - name: Checksums
         run: sha256sum android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/bundle/release/app-release.aab > SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
         with: { files: "android/app/build/outputs/apk/release/app-release.apk\nandroid/app/build/outputs/bundle/release/app-release.aab\nSHA256SUMS.txt", draft: true }
-
+      - name: Remove temporary signing files
+        if: always()
+        run: rm -f android/release.jks android/keystore.properties
