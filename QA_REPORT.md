@@ -2,45 +2,56 @@
 
 Fecha: 2026-07-14. Rama: `main`. Repositorio: `rubbeen/english-circuit-ruben`.
 
-## Resultados ejecutados
+## Web y aplicación
 
-- `npm ci`: correcto, 997 paquetes instalados de `package-lock.json`.
-- `npm run typecheck`: correcto.
-- `npm run lint`: correcto, cero warnings.
-- `npm run test`: 7 archivos, 10 pruebas, todas correctas.
-- `CONTENT_PHASE=final npm run validate:content`: 24 semanas, 72 lecciones, IDs únicos y actividades completas.
-- `npm run build`: correcto, 24 chunks semanales separados.
-- `npm run test:e2e`: 3/3.
-- `npm run test:responsive`: 17/17; cubre 16 viewports más texto 200 %/tema oscuro, sin overflow horizontal.
-- `npm run test:offline`: 1/1; lección visitada funciona offline y conserva progreso al reconectar.
-- Accesibilidad: foco/salto al contenido, estructura, nombres de botones, teclado, texto ampliado, contraste/tema y reduced motion verificados automáticamente.
-- Reglas/emuladores: 10/10; propietario, otro usuario, no autenticado, correo no verificado, perfil inválido, documento válido, ruta desconocida, rutas financieras y Storage bloqueado.
-- `npm run analyze:bundle`: JavaScript inicial aproximado 319.7 KB gzip (presupuesto 450 KB); CSS 6.3 KB gzip (presupuesto 80 KB); cada semana 0.6–0.75 KB gzip.
-- `guard:project`, `guard:firebase`, `guard:security`: correctos.
+- Guards `project`, `firebase`, `security` y `release`: correctos.
+- Typecheck y lint: correctos, cero warnings.
+- Vitest: 9 archivos, 13/13 pruebas.
+- Contenido: 24 semanas, 72 lecciones, IDs únicos y actividades completas.
+- Playwright E2E: 3/3.
+- Responsive: 17/17, incluidos landscape, texto ampliado y tema oscuro; sin overflow horizontal.
+- Offline: 1/1 sobre lección visitada y persistencia local.
+- Bundle inicial aproximado: 320.3 KB gzip; CSS 6.3 KB gzip; chunk Firebase 223.8 KB gzip.
+- Producción: HTTPS, manifest PWA, modo standalone, service worker actualizable y rutas SPA verificados.
+
+## Firebase productivo
+
+- Web App y Android App independientes registrados.
+- Hosting `english-circuit-ruben` desplegado en https://english-circuit-ruben.web.app.
+- Email/contraseña verificado: inicio, persistencia, cierre y mensaje para correo no verificado correctos.
+- Humo educativo: progreso parcial, borrador, finalización, seis tarjetas y una sesión.
+- Segundo navegador: progreso y borrador recuperados desde Firestore.
+- Firestore: 1 progreso/1 ID único, 6 tarjetas/6 IDs únicos, 1 sesión/1 ID único y perfil raíz sin el ID local.
+- Namespace usado: exclusivamente `users/{uid}/apps/english` y sus cuatro subcolecciones permitidas.
+- Reglas productivas: desplegadas de forma separada; emuladores 10/10.
+- Índices financieros, Storage y Hosting financiero: no modificados.
+
+## Android release
+
 - `npx cap sync android`: correcto.
-- `gradlew.bat assembleDebug`: correcto.
-- APK: package `com.ruben.englishcircuit`, versionCode 1, minSdk 24, target/compileSdk 36, firma debug APK Signature v2 verificada.
-- Permisos APK: Internet, estado de red y micrófono; ninguno de ubicación, cámara, contactos, SMS, llamadas o almacenamiento general.
-- SHA-256 APK: `D086F1D9FE7B9308814CE56E6F1CBC1A7FA56AD044DDE4C113A789CF0E6E2EEE`.
-- `npm audit --omit=dev`: 0 vulnerabilidades de producción. Cinco avisos moderados transitivos están limitados a `firebase-tools` de desarrollo y documentados en `SECURITY.md`.
+- Gradle `clean lint test assembleRelease bundleRelease`: `BUILD SUCCESSFUL` (501 tareas).
+- APK: 2,511,874 bytes; AAB: 2,874,436 bytes.
+- Package `com.ruben.englishcircuit`; versionCode 1; versionName 1.0.0; minSdk 24; target/compileSdk 36.
+- APK Signature Scheme v2: verificado; AAB JAR: verificado.
+- APK SHA-256: `5d1fb6ffb565632589366d36a4fe9cef208845923ad9be012b76fbbb08aae560`.
+- AAB SHA-256: `d6117c4b3e991d2adab949ae0b3f1f54510785b086259140f3fb7de39417d920`.
+- Permisos: Internet, estado de red, micrófono y permiso interno no exportado; ningún permiso prohibido.
+- Orientación: sin declaración fija en el APK.
+- Emulador Pixel 4 API 30: instalación y arranque correctos, actividad reanudada y cero cierres fatales.
 
-## Recursos preparados, no creados ni desplegados
+## Pendientes y limitaciones reales
 
-- Firebase Project ID: `control-financiero-ruben`.
-- Web App pendiente: **English Circuit Web**; falta un App ID independiente y API key válidos.
-- Android App Firebase pendiente: **English Circuit Android**, Package ID `com.ruben.englishcircuit`.
-- Hosting site previsto: `english-circuit-ruben`; target local `english`.
-- No existe URL productiva porque no se creó ni desplegó el sitio.
-- AAB/release firmado pendiente por ausencia de keystore y cuatro secretos `ENGLISH_ANDROID_*`.
-- `guard:release` falla deliberadamente mientras falten las variables Firebase y `CONTENT_PHASE=final` en el entorno de release.
+- Prueba manual física en Samsung Galaxy A33 y Galaxy Tab S10 FE.
+- Micrófono, pronunciación, teclado, split-screen y rotación visual deben confirmarse en esos dispositivos; el AVD headless no reflejó el cambio de superficie aunque la actividad sobrevivió y las pruebas web landscape pasaron.
+- Cinco avisos moderados transitivos de herramientas permanecen documentados; no afectan el resultado de guards/build.
 
-## Confirmaciones de protección
+## Confirmaciones
 
-- La aplicación financiera y su repositorio no fueron modificados.
-- No se leyó ni escribió ningún dato financiero.
-- No se desplegaron reglas, índices, Storage ni Hosting.
-- No se desplegó sobre el Hosting financiero.
-- Las reglas financieras inspeccionadas se conservaron antes de agregar el namespace educativo.
-- Storage permanece bloqueado y las grabaciones son exclusivamente locales.
-- La orientación permanece libre; no existe bloqueo portrait/landscape.
-- Las respuestas y borradores persisten al rotar/redimensionar, recargar y trabajar offline.
+- Aplicación financiera modificada: no.
+- Datos financieros consultados: no.
+- Hosting financiero modificado: no.
+- Storage habilitado: no.
+- Facturación activada: no.
+- Cloud Functions usadas: no.
+- Orientación bloqueada: no.
+- Secretos publicados: no.

@@ -1,9 +1,13 @@
 # Seguridad
 
-Controles: `guard:project`, `guard:firebase`, `guard:security` y `guard:release`. Detectan remoto/Package ID incorrectos, consultas financieras, secretos, Storage habilitado, Cloud Functions, orientación fija y despliegues inseguros.
+Los guards verifican repositorio, Package ID, target Firebase, secretos versionados, consultas financieras, Storage habilitado, Cloud Functions, orientación fija y comandos `firebase deploy` sin `--only`. El guard de secretos analiza únicamente archivos versionables (`git ls-files --cached --others --exclude-standard`), por lo que valida el contenido publicable sin exponer el `.env` local ignorado.
 
-Las reglas requieren propietario y email verificado. Los campos críticos del perfil se validan por tipo/rango. Las colecciones educativas permitidas son una allowlist. La prueba de arquitectura impide imports de persistencia en UI y referencias productivas a colecciones financieras.
+Las reglas exigen UID propietario y correo verificado para English Circuit. El namespace educativo usa allowlist y valida esquema/ID; las grabaciones nunca se suben. Storage continúa con `allow read, write: if false`.
 
-No hay datos financieros, secretos, cuentas de servicio, keystores ni credenciales versionados.
+Antes del despliegue se obtuvo y comparó la versión productiva. Se preservaron sus accesos financieros existentes y se añadió únicamente `users/{uid}/apps/english`. Se desplegó solo `firestore:rules`; no se desplegaron índices, Storage, Hosting financiero ni Cloud Functions.
 
-`npm audit --omit=dev` reporta 0 vulnerabilidades de producción. El árbol completo reporta cinco avisos moderados transitivos en `firebase-tools` (`@opentelemetry/core` y `uuid`); solo afectan herramientas de desarrollo. npm propone un downgrade mayor de Firebase CLI, por lo que se conservó la versión validada y se documentó el riesgo en lugar de aplicar `--force`.
+No hay datos financieros, secretos, cuentas de servicio, keystores ni contraseñas versionados. Durante el trabajo no se consultó ninguna ruta financiera. La inspección se limitó a metadatos de proyecto, reglas/índices desplegados y rutas educativas del usuario de humo.
+
+La cuenta CI de publicación tiene tres roles específicos: Firebase Hosting Admin, Firebase Rules Admin y API Keys Viewer. No posee roles Editor, Owner, Firestore Data ni Storage.
+
+`npm audit` reporta cinco avisos moderados transitivos del árbol de herramientas. No se aplicó `npm audit fix --force` porque proponía cambios mayores fuera del alcance; guards, pruebas y build permanecen verdes.

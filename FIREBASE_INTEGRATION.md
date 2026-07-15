@@ -1,16 +1,47 @@
 # Integración Firebase
 
-Proyecto: `control-financiero-ruben`. English Circuit requiere Web App y Android App independientes; no reutiliza el App ID financiero.
+## Recursos registrados
 
-El proveedor confirmado es email/contraseña y se exige correo verificado. Sin `.env` la aplicación no inicializa Firebase. Los datos se limitan al documento `users/{uid}/apps/english` y las subcolecciones `lessonProgress`, `reviewCards`, `studySessions` y `statistics`.
+- Project ID: `control-financiero-ruben`.
+- Web App: **English Circuit Web** — `1:459907047052:web:a82f1c2b3e9d2807f965a9`.
+- Android App: **English Circuit Android** — `1:459907047052:android:2a13dc8875f0240af965a9`.
+- Package Android: `com.ruben.englishcircuit`.
+- Hosting site: `english-circuit-ruben`; target local: `english`.
 
-La cola es local. Cada guardado actualiza IndexedDB y registra una operación determinista. Al sincronizar se usa `setDoc(..., {merge:true})`, `serverTimestamp`, backoff limitado y borrado de cola solo tras confirmación.
+Ningún App ID o package ID financiero se reutiliza. El bucket aparece en la configuración estándar del SDK, pero Firebase Storage no está habilitado ni se utiliza y sus reglas continúan denegando todo acceso.
 
-Las reglas preservan las reglas financieras inspeccionadas, agregan el namespace educativo antes del bloqueo final y mantienen Storage denegado. Para probar:
+## Autenticación y sincronización
+
+El proveedor es email/contraseña y se exige correo verificado. Sin `.env` la aplicación no inicializa Firebase. Los datos se limitan a:
+
+```text
+users/{uid}/apps/english
+users/{uid}/apps/english/lessonProgress/{lessonId}
+users/{uid}/apps/english/reviewCards/{cardId}
+users/{uid}/apps/english/studySessions/{sessionId}
+users/{uid}/apps/english/statistics/{documentId}
+```
+
+Cada guardado actualiza IndexedDB y encola un `upsert` determinista. La sincronización empuja primero las operaciones pendientes con backoff, usa `serverTimestamp` y elimina la cola solo después de confirmación. Con la cola vacía descarga el snapshot educativo y fusiona por `updatedAt`; esto permite recuperar el progreso en otro navegador sin duplicados. Grabaciones, credenciales y datos financieros nunca forman parte del payload.
+
+El humo productivo validó sesión persistente, cierre de sesión, rechazo de correo no verificado, progreso parcial, borrador, seis tarjetas, una sesión y recuperación cruzada.
+
+## Secretos y permisos CI
+
+El Environment `production` exige aprobación manual y contiene los seis secretos `VITE_FIREBASE_*`, `FIREBASE_SERVICE_ACCOUNT_CONTROL_FINANCIERO_RUBEN` y cuatro secretos `ENGLISH_ANDROID_*`.
+
+La cuenta `english-circuit-publisher@control-financiero-ruben.iam.gserviceaccount.com` tiene únicamente:
+
+- `roles/firebasehosting.admin`.
+- `roles/firebaserules.admin`.
+- `roles/serviceusage.apiKeysViewer`.
+
+## Reglas
+
+Las reglas productivas inspeccionadas se conservaron y el namespace educativo se añadió antes del bloqueo final. Los índices financieros productivos no se tocaron. Prueba local:
 
 ```bash
 npx firebase emulators:exec --only firestore,storage --project demo-english-circuit "npm run test:firestore-rules"
 ```
 
-En Windows puede ser necesario dejar que el runtime de Storage termine su primera descarga antes de repetir el comando.
-
+Resultado final: 10/10.

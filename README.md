@@ -2,13 +2,17 @@
 
 **Inglés desde cero para ingeniería y vida cotidiana.** Aplicación React/TypeScript offline-first, PWA y Android para adultos hispanohablantes desde nivel A0.
 
-## Estado
+## Estado productivo
 
-Implementa 24 semanas, 72 lecciones principales, prácticas, repetición espaciada, voz `en-US`, grabaciones locales, progreso IndexedDB, respaldo JSON, sincronización Firebase opcional, interfaz adaptativa y compilación Capacitor. No contiene publicidad, rastreadores, Cloud Functions ni Firebase Storage.
+Incluye 24 semanas, 72 lecciones, repetición espaciada, voz `en-US`, grabaciones exclusivamente locales, progreso en IndexedDB, respaldo JSON y sincronización Firebase opcional. No contiene publicidad, rastreadores, Cloud Functions ni uso de Firebase Storage.
+
+- Web: https://english-circuit-ruben.web.app
+- Android: `com.ruben.englishcircuit`, versión `1.0.0` (`versionCode 1`).
+- Release: https://github.com/rubbeen/english-circuit-ruben/releases/tag/v1.0.0
 
 ## Desarrollo
 
-Requiere Node 22.12 o superior y Java 21 para emuladores/Android.
+Requiere Node 22.12 o superior y Java 21 para Firebase Emulator Suite y Android.
 
 ```bash
 npm ci
@@ -20,7 +24,7 @@ CONTENT_PHASE=final npm run validate:content
 npm run build
 ```
 
-Copie `.env.example` a `.env` únicamente después de registrar la Web App independiente **English Circuit Web**. Sin esas variables la aplicación funciona en modo local y no inicializa Firebase.
+Copie `.env.example` a `.env` solo para desarrollo autorizado. Sin variables la aplicación conserva el modo local y no inicializa Firebase. Los valores productivos viven en el Environment de GitHub `production`, nunca en Git.
 
 ## Documentación
 
@@ -32,10 +36,6 @@ Copie `.env.example` a `.env` únicamente después de registrar la Web App indep
 - [Seguridad](SECURITY.md)
 - [Privacidad](PRIVACY.md)
 - [Recuperación](RECOVERY.md)
-- [Decisiones](DECISIONS.md)
-- [Descubrimiento](DISCOVERY.md)
-- [Contribución](CONTRIBUTING.md)
-- [Atribuciones](ATTRIBUTIONS.md)
+- [Calidad](QA_REPORT.md)
 
 La aplicación financiera es independiente. Este repositorio no contiene ni consulta datos financieros y ningún workflow despliega sobre su Hosting.
-

@@ -13,6 +13,7 @@ jobs:
       VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
       VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
       VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+      CONTENT_PHASE: final
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,10 +33,30 @@ jobs:
           printf 'storeFile=release.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > android/keystore.properties
       - run: ./gradlew clean lint test assembleRelease bundleRelease --no-daemon
         working-directory: android
-      - name: Checksums
-        run: sha256sum android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/bundle/release/app-release.aab > SHA256SUMS.txt
+      - name: Prepare public release artifacts and checksums
+        run: |
+          mkdir -p release
+          cp android/app/build/outputs/apk/release/app-release.apk "release/english-circuit-${GITHUB_REF_NAME}.apk"
+          cp android/app/build/outputs/bundle/release/app-release.aab "release/english-circuit-${GITHUB_REF_NAME}.aab"
+          cd release
+          sha256sum "english-circuit-${GITHUB_REF_NAME}.apk" "english-circuit-${GITHUB_REF_NAME}.aab" > SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
-        with: { files: "android/app/build/outputs/apk/release/app-release.apk\nandroid/app/build/outputs/bundle/release/app-release.aab\nSHA256SUMS.txt", draft: true }
+        with:
+          name: English Circuit ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body: |
+            Primera versión pública de English Circuit.
+
+            - 24 semanas.
+            - 72 lecciones.
+            - Inglés cotidiano, profesional y técnico.
+            - Modo offline.
+            - Sincronización Firebase.
+            - PWA.
+            - Teléfonos y tabletas Android.
+            - Orientación vertical y horizontal.
+          files: release/*
       - name: Remove temporary signing files
         if: always()
         run: rm -f android/release.jks android/keystore.properties
