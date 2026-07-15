@@ -12,7 +12,7 @@
     "preview": "vite preview --host 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",
-    "test": "vitest run --exclude tests/firestore.rules.test.ts",
+    "test": "vitest run --exclude tests/firestore.rules.test.ts --exclude tests/e2e/** --exclude tests/responsive/** --exclude tests/offline/**",
     "test:unit": "vitest run src/**/*.test.ts",
     "test:components": "vitest run src/**/*.test.tsx",
     "test:e2e": "playwright test tests/e2e",

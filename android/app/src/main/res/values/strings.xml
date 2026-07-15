@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">English Circuit</string>
+    <string name="title_activity_main">English Circuit</string>
+    <string name="package_name">com.ruben.englishcircuit</string>
+    <string name="custom_url_scheme">com.ruben.englishcircuit</string>
+</resources>

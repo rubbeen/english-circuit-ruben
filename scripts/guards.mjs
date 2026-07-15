@@ -19,6 +19,7 @@ if (mode === 'firebase' || mode === 'release') {
 if (mode === 'security' || mode === 'release') {
   const files = await allFiles('.');
   for (const file of files) {
+    if (file.endsWith(path.join('scripts','guards.mjs'))) continue;
     if (/\.(png|jpg|ico|woff2|lock)$/.test(file)) continue; const source = await text(file);
     if (file.includes(path.join('src','')) && /(?:collection|doc)\s*\([^\n]*(?:accounts|categories|movements|budgets)/i.test(source)) errors.push(`Consulta financiera detectada en ${file}.`);
     if (/firebase deploy(?![^\n]*--only)/.test(source) && !file.endsWith('AGENTS.md') && !file.endsWith('DEPLOYMENT.md')) errors.push(`Despliegue Firebase sin --only en ${file}.`);
@@ -35,4 +36,3 @@ if (mode === 'release') {
   if (process.env.CONTENT_PHASE !== 'final') errors.push('CONTENT_PHASE=final es obligatorio para release.');
 }
 if(errors.length){console.error(errors.map((e)=>`- ${e}`).join('\n'));process.exit(1)} console.log(`Guard ${mode}: correcto.`);
-

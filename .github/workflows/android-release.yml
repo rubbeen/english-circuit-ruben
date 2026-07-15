@@ -1,0 +1,39 @@
+name: Android release candidate
+on:
+  push: { tags: ['v*'] }
+permissions: { contents: write }
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: english-circuit-android-release
+    env:
+      VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+      VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+      VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+      VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+      VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+      VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21', cache: gradle }
+      - run: npm ci && npm run guard:security && npm run build && npx cap sync android
+      - name: Materialize signing files
+        env:
+          KEYSTORE: ${{ secrets.ENGLISH_ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ENGLISH_ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ENGLISH_ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ENGLISH_ANDROID_KEY_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE" && test -n "$STORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD"
+          printf '%s' "$KEYSTORE" | base64 --decode > android/release.jks
+          printf 'storeFile=release.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > android/keystore.properties
+      - run: ./gradlew assembleRelease bundleRelease --no-daemon
+        working-directory: android
+      - name: Checksums
+        run: sha256sum android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/bundle/release/app-release.aab > SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with: { files: "android/app/build/outputs/apk/release/app-release.apk\nandroid/app/build/outputs/bundle/release/app-release.aab\nSHA256SUMS.txt", draft: true }
+

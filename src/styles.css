@@ -12,3 +12,4 @@
 @container(min-width:700px){.lesson-section{grid-template-columns:42px minmax(0,1fr)}}
 .lesson-content{container-type:inline-size}
 .button-ghost{color:var(--navy-800);background:var(--surface-2);border:1px solid var(--line)}
+.pwa-prompt{position:fixed;z-index:90;right:24px;bottom:24px;display:flex;align-items:center;gap:18px;max-width:min(480px,calc(100vw - 48px));padding:15px 16px;border-radius:16px;background:var(--navy-950);color:#fff;box-shadow:var(--shadow)}.pwa-prompt div{min-width:0}.pwa-prompt b,.pwa-prompt span{display:block}.pwa-prompt span{font-size:.76rem;color:#b9cce4}.pwa-prompt .button{flex:none}@media(max-width:599px){.pwa-prompt{right:12px;bottom:78px;max-width:calc(100vw - 24px);gap:10px;padding:12px}.pwa-prompt .button{min-height:42px;padding:8px 12px}}

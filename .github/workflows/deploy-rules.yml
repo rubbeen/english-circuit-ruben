@@ -1,0 +1,25 @@
+name: Deploy reviewed English rules
+on: { workflow_dispatch: {} }
+permissions: { contents: read }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: english-circuit-rules-approval
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - run: npm ci
+      - run: npm run guard:security
+      - run: npx firebase emulators:exec --only firestore,storage --project demo-english-circuit "npm run test:firestore-rules"
+      - name: Prepare temporary Firebase credentials
+        env: { SERVICE_ACCOUNT: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CONTROL_FINANCIERO_RUBEN }}" }
+        run: |
+          test -n "$SERVICE_ACCOUNT"
+          printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
+      - name: Deploy only reviewed rules and indexes
+        run: npx firebase deploy --only firestore:rules,firestore:indexes,storage --project control-financiero-ruben
+
