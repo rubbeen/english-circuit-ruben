@@ -1,0 +1,28 @@
+import type { CourseWeek } from '../schema';
+
+export const courseLoaders: Record<number, () => Promise<{ default: CourseWeek }>> = {
+  1: () => import('./week-01'),
+  2: () => import('./week-02'),
+  3: () => import('./week-03'),
+  4: () => import('./week-04'),
+  5: () => import('./week-05'),
+  6: () => import('./week-06'),
+  7: () => import('./week-07'),
+  8: () => import('./week-08'),
+  9: () => import('./week-09'),
+  10: () => import('./week-10'),
+  11: () => import('./week-11'),
+  12: () => import('./week-12'),
+  13: () => import('./week-13'),
+  14: () => import('./week-14'),
+  15: () => import('./week-15'),
+  16: () => import('./week-16'),
+  17: () => import('./week-17'),
+  18: () => import('./week-18'),
+  19: () => import('./week-19'),
+  20: () => import('./week-20'),
+  21: () => import('./week-21'),
+  22: () => import('./week-22'),
+  23: () => import('./week-23'),
+  24: () => import('./week-24'),
+};

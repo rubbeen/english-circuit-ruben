@@ -1,4 +1,5 @@
 import type { CourseWeek } from '../schema';
+import { courseLoaders } from './generatedLoaders';
 
 export const weekMetadata = [
   ['Primer contacto', 'Fundamentos'], ['Números y datos básicos', 'Fundamentos'], ['Personas y familia', 'Fundamentos'], ['Preguntas esenciales', 'Fundamentos'],
@@ -9,14 +10,10 @@ export const weekMetadata = [
   ['Explicar circuitos', 'Integración'], ['Inspecciones y recomendaciones', 'Integración'], ['Entrevistas y experiencia', 'Integración'], ['Proyecto técnico final', 'Integración'],
 ].map(([title, stage], index) => ({ week: index + 1, title, stage }));
 
-const loaders: Partial<Record<number, () => Promise<{ default: CourseWeek }>>> = {
-  1: () => import('./week-01'),
-};
-
 export async function loadWeek(week: number): Promise<CourseWeek> {
-  const loader = loaders[week];
+  const loader = courseLoaders[week];
   if (!loader) throw new Error(`La semana ${week} aún no está instalada en esta compilación.`);
   return (await loader()).default;
 }
 
-export function availableWeeks() { return Object.keys(loaders).map(Number); }
+export function availableWeeks() { return Object.keys(courseLoaders).map(Number).sort((a,b)=>a-b); }
