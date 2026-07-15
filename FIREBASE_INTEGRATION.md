@@ -35,6 +35,7 @@ La cuenta `english-circuit-publisher@control-financiero-ruben.iam.gserviceaccoun
 - `roles/firebasehosting.admin`.
 - `roles/firebaserules.admin`.
 - `roles/serviceusage.apiKeysViewer`.
+- `roles/serviceusage.serviceUsageViewer` (solo consulta si las APIs requeridas están habilitadas).
 
 ## Reglas
 

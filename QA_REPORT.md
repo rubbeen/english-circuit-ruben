@@ -24,6 +24,7 @@ Fecha: 2026-07-14. Rama: `main`. Repositorio: `rubbeen/english-circuit-ruben`.
 - Firestore: 1 progreso/1 ID único, 6 tarjetas/6 IDs únicos, 1 sesión/1 ID único y perfil raíz sin el ID local.
 - Namespace usado: exclusivamente `users/{uid}/apps/english` y sus cuatro subcolecciones permitidas.
 - Reglas productivas: desplegadas de forma separada; emuladores 10/10.
+- Workflows manuales protegidos: Hosting y reglas ejecutados correctamente con la cuenta de servicio de mínimo privilegio.
 - Índices financieros, Storage y Hosting financiero: no modificados.
 
 ## Android release

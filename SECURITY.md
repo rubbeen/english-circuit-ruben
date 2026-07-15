@@ -8,6 +8,6 @@ Antes del despliegue se obtuvo y comparó la versión productiva. Se preservaron
 
 No hay datos financieros, secretos, cuentas de servicio, keystores ni contraseñas versionados. Durante el trabajo no se consultó ninguna ruta financiera. La inspección se limitó a metadatos de proyecto, reglas/índices desplegados y rutas educativas del usuario de humo.
 
-La cuenta CI de publicación tiene tres roles específicos: Firebase Hosting Admin, Firebase Rules Admin y API Keys Viewer. No posee roles Editor, Owner, Firestore Data ni Storage.
+La cuenta CI de publicación tiene cuatro roles específicos: Firebase Hosting Admin, Firebase Rules Admin, API Keys Viewer y Service Usage Viewer. El último solo permite inspeccionar el estado de las APIs que Firebase CLI comprueba antes de desplegar. No posee roles Editor, Owner, Firestore Data, Storage ni permisos para habilitar APIs.
 
 `npm audit` reporta cinco avisos moderados transitivos del árbol de herramientas. No se aplicó `npm audit fix --force` porque proponía cambios mayores fuera del alcance; guards, pruebas y build permanecen verdes.
