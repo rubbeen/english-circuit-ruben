@@ -33,7 +33,8 @@ Fecha: 2026-07-14. Rama: `main`. Repositorio: `rubbeen/english-circuit-ruben`.
 - APK: 2,511,874 bytes; AAB: 2,874,436 bytes.
 - Package `com.ruben.englishcircuit`; versionCode 1; versionName 1.0.0; minSdk 24; target/compileSdk 36.
 - APK Signature Scheme v2: verificado; AAB JAR: verificado.
-- APK SHA-256: `5d1fb6ffb565632589366d36a4fe9cef208845923ad9be012b76fbbb08aae560`.
+- GitHub Release `v1.0.0`: pública, no prerelease, con APK, AAB y `SHA256SUMS.txt`; workflow protegido correcto.
+- APK SHA-256: `f7ee557f2de7f26084a25aaf5cbfce6e6469bb127311a8136040d2e526a719d4`.
 - AAB SHA-256: `d6117c4b3e991d2adab949ae0b3f1f54510785b086259140f3fb7de39417d920`.
 - Permisos: Internet, estado de red, micrófono y permiso interno no exportado; ningún permiso prohibido.
 - Orientación: sin declaración fija en el APK.

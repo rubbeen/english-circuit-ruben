@@ -27,7 +27,7 @@ gradlew.bat clean lint test assembleRelease bundleRelease --no-daemon
 
 Artefactos `v1.0.0`:
 
-- APK SHA-256: `5d1fb6ffb565632589366d36a4fe9cef208845923ad9be012b76fbbb08aae560`.
+- APK SHA-256: `f7ee557f2de7f26084a25aaf5cbfce6e6469bb127311a8136040d2e526a719d4`.
 - AAB SHA-256: `d6117c4b3e991d2adab949ae0b3f1f54510785b086259140f3fb7de39417d920`.
 
 APK Signature Scheme v2 y firma JAR del AAB fueron verificadas. Los permisos funcionales son Internet, estado de red y micrófono; AndroidX añade un permiso interno no exportado del propio package. No existen permisos de ubicación, cámara, contactos, SMS, llamadas ni almacenamiento general.
