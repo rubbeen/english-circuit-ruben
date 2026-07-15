@@ -1,0 +1,24 @@
+{
+  "id": "/",
+  "name": "English Circuit",
+  "short_name": "E Circuit",
+  "description": "Inglés desde cero para ingeniería y vida cotidiana",
+  "lang": "es-CO",
+  "start_url": "/#/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0b2351",
+  "background_color": "#edf2f6",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icons/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icons/icon-maskable.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Continuar", "url": "/#/ruta", "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" }] },
+    { "name": "Repasar", "url": "/#/repaso", "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" }] }
+  ]
+}
+

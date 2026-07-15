@@ -1,0 +1,9 @@
+{
+  "projects": { "default": "control-financiero-ruben" },
+  "targets": {
+    "control-financiero-ruben": {
+      "hosting": { "english": ["english-circuit-ruben"] }
+    }
+  }
+}
+
